@@ -1,0 +1,3 @@
+Java program which has the user enter an expression in postfix notation. 
+The calculator recursively performs algebraic operations on expressions of any length by placing them into an expression tree and then evaluating the tree. 
+At any point, the user may change the output display to postfix, infix or prefix notation. 
