@@ -1,0 +1,129 @@
+
+/**
+ * Program in which the user enters an expression in postfix notation (ex:5 10 1
+ * + * 7 -). The user can then set the display to [P]ostfix,[I]nfix, or
+ * p[R]efix. The output will display the correct calculation of the expression
+ * using an ExpressionTree. At any point the user can select Q and end the
+ * program .
+ * 
+ * @author Steve Schafer
+ * @version 04182020
+ */
+import java.util.Scanner;
+import osu.cse2123.TreeNode;
+
+public class TreeRecursion {
+
+	public static void main(String[] args) {
+		Scanner keyboard = new Scanner(System.in);
+		System.out.println("No expression in memory");
+		// end the program and print out goodbye
+		boolean quit = false;
+		String expr = "";
+		while (!quit) {
+			// return to main menu
+			boolean back = false;
+			while (!back) {
+				System.out.println("Enter your choice: ");
+				System.out.println("[S]et the display format");
+				System.out.println("[E]nter a new expression");
+				System.out.println("[Q]uit");
+				System.out.print("> ");
+
+				String input = keyboard.nextLine().toUpperCase();
+				boolean choice = true;
+				// incorrect input
+				while (choice) {
+					if (!(input.equals("S") || input.equals("E") || input.equals("Q"))) {
+						System.out.println("ERROR!  You must enter one of [E], [S] or [Q]!");
+						choice = false;
+					} else {
+						if (input.equals("E")) {
+							System.out.print("Enter your expression in postfix notation: ");
+							expr = keyboard.nextLine();
+							TreeNode<String> builtTree = ExpressionTree.buildTreeFromString(expr);
+							boolean end = true;
+							while (end) {
+								if (expr != null) {
+									System.out.println(ExpressionTree.toPostfixString(builtTree) + " = "
+											+ ExpressionTree.evaluate(builtTree));
+									System.out.println();
+									choice = false;
+									break;
+									// check first digit for postfix
+								} else if (expr.charAt(0) != '0' || expr.charAt(0) != '1' || expr.charAt(0) != '2'
+										|| expr.charAt(0) != '3' || expr.charAt(0) != '4' || expr.charAt(0) != '5'
+										|| expr.charAt(0) != '6' || expr.charAt(0) != '7' || expr.charAt(0) != '8'
+										|| expr.charAt(0) != '9') {
+									System.out.println();
+									System.out.println("Error! Expression not in postfix notation!");
+									end = false;
+
+								} else {
+									System.out.println();
+									System.out.println("Error! Expression not in postfix notation!");
+									end = false;
+								}
+							}
+						}
+						if (input.toUpperCase().equals("S")) {
+							System.out.println("Enter your preferred output display: ");
+							System.out.println("[P]ostfix");
+							System.out.println("[I]nfix");
+							System.out.println("p[R]efix");
+							System.out.print("> ");
+							String displayChoice = keyboard.nextLine().toUpperCase();
+							// incorrect input
+							while (!(displayChoice.equals("P") || displayChoice.equals("I")
+									|| displayChoice.equals("R"))) {
+								System.out.println("ERROR!  You must enter one of [P], [I] or [R]!");
+								System.out.println("Enter your preferred output display: ");
+								System.out.println("[P]ostfix");
+								System.out.println("[I]nfix");
+								System.out.println("p[R]ostfix");
+								System.out.print("> ");
+								displayChoice = keyboard.nextLine().toUpperCase();
+							}
+							// For expr string ""
+							if (expr.equals("")) {
+								System.out.println("No expression in memory");
+							} else {
+								// Creates TreeNode from (expr)ession entered by user
+								TreeNode<String> node = ExpressionTree.buildTreeFromString(expr);
+								if (displayChoice.equals("P")) {
+									String postFixStr = ExpressionTree.toPostfixString(node);
+									int sum = ExpressionTree.evaluate(node);
+									System.out.print(postFixStr + " = " + sum);
+									System.out.println();
+								} else if (displayChoice.equals("I")) {
+									String InfixStr = ExpressionTree.toInfixString(node);
+									int sum = ExpressionTree.evaluate(node);
+									System.out.print(InfixStr + " = " + sum);
+									System.out.println();
+								} else { // R
+									String prefixStr = ExpressionTree.toPrefixString(node);
+									int sum = ExpressionTree.evaluate(node);
+									System.out.print(prefixStr + " = " + sum);
+									System.out.println();
+
+								}
+							}
+							choice = false;
+							back = true;
+						}
+
+						if (input.equals("Q")) {
+							// Returns to outermost while and quits the program
+							choice = false;
+							back = true;
+							quit = true;
+						}
+					}
+				}
+			}
+		}
+		System.out.println("Goodbye!");
+		keyboard.close();
+	}
+
+}
