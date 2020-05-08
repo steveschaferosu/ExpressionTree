@@ -1,0 +1,106 @@
+/**
+ * This class contains a series of methods to perform on a TreeNode and create an ExpressionTree. 
+ * The methods are: buildTreeFromString,toPostfixString, toInfixString,toPrefixString and evaluate.
+ * 
+ * @author Steve Schafer
+ * @version 04182020
+ */
+import java.util.Stack;
+
+import osu.cse2123.TreeNode;
+
+public class ExpressionTree {
+
+	public static TreeNode<String> buildTreeFromString(String expr) {
+		String[] exprArr = expr.split("\\s+");
+		Stack<TreeNode<String>> nodeStack = new Stack<>();
+		for (int i = 0; i < exprArr.length; i++) {
+			TreeNode<String> operatorTree = new TreeNode<String>(exprArr[i]);
+			// checks if operator
+			if (operatorTree.getData().equals("*") || operatorTree.getData().equals("/")
+					|| operatorTree.getData().equals("+") || operatorTree.getData().equals("-")) {
+				TreeNode<String> pop1 = nodeStack.pop();
+				TreeNode<String> pop2 = nodeStack.pop();
+				// empty node
+				if (pop1.getData().equals(null) || pop2.getData().equals(null)) {
+					System.out.println("No expression in memory");
+					return null;
+				} else {
+					operatorTree.setRightChild(pop1);
+					operatorTree.setLeftChild(pop2);
+					nodeStack.push(operatorTree);
+				}
+			} else {
+				// pushes integers
+				nodeStack.push(operatorTree);
+			}
+		}
+		if (nodeStack.size() == 1) {
+			return nodeStack.pop();
+		} else {
+			System.out.println("No expression in memory");
+			return null;
+		}
+
+	}
+
+	// Format: 5 10 1 + * 7 -
+	public static String toPostfixString(TreeNode<String> expr) {
+		String result = "";
+		// result is concatenated with each child 
+		if (expr.getLeftChild() != null) {
+			result += toPostfixString(expr.getLeftChild());
+		}
+		if (expr.getRightChild() != null) {
+			result += toPostfixString(expr.getRightChild());
+		}
+		// parent node(operator) 
+		result += expr.getData().toString() + " ";
+		return result;
+
+	}
+
+	public static String toInfixString(TreeNode<String> expr) {
+		String result = "";
+		if (expr.getLeftChild() != null) {
+			result += "(" + toInfixString(expr.getLeftChild());
+		}
+		result += expr.getData().toString() + " ";
+		if (expr.getRightChild() != null) {
+			result += toInfixString(expr.getRightChild()) + ")";
+		}
+		return result;
+	}
+
+	public static String toPrefixString(TreeNode<String> expr) {
+		String result = "";
+		result += expr.getData().toString();
+		if (expr.getLeftChild() != null) {
+			result += " " + toPrefixString(expr.getLeftChild());
+		}
+		if (expr.getRightChild() != null) {
+			result += " " + toPrefixString(expr.getRightChild());
+		}
+		return result;
+	}
+
+	public static int evaluate(TreeNode<String> expr) {
+		// checks if operator
+		if ((expr.getData().equals("*")) || (expr.getData().equals("/")) || (expr.getData().equals("+"))
+				|| (expr.getData().equals("-"))) {
+			if (expr.getData().equals("*")) {
+				return evaluate(expr.getLeftChild()) * evaluate((expr.getRightChild()));
+			} else if (expr.getData().equals("/")) {
+				return evaluate(expr.getLeftChild()) / evaluate((expr.getRightChild()));
+			} else if (expr.getData().equals("+")) {
+				return evaluate(expr.getLeftChild()) + evaluate((expr.getRightChild()));
+			} else {
+				return evaluate(expr.getLeftChild()) - evaluate((expr.getRightChild()));
+			}
+		} else {
+			// Integers
+			return Integer.parseInt(expr.getData());
+		}
+	}
+
+}
